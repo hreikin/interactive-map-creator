@@ -1,3 +1,3 @@
-# Campaign Map Creator
+# Interactive Map Creator
 
 Coming Soon.

@@ -42,7 +42,7 @@ else:
 with open(".streamlit/config.yaml") as file:
     config = st_auth.yaml.load(file, Loader=st_auth.SafeLoader)
 
-authenticator = st_auth.Authenticate(
+st.session_state["authenticator"] = st_auth.Authenticate(
     config["credentials"],
     config["cookie"]["name"],
     config["cookie"]["key"],
@@ -52,8 +52,9 @@ authenticator = st_auth.Authenticate(
 
 # Show login form if user isn't logged in.
 if st.session_state["authentication_status"] == None:
-    name, authentication_status, username = authenticator.login("Login", "main")
-    
+    st.header("Interactive Map Creator")
+    name, authentication_status, username = st.session_state["authenticator"].login("Login", "main")
+
 # Show error message if authentication fails and reset authentication_status to
 # none to avoid issues with forms disappearing after the user tries to log in.
 if st.session_state["authentication_status"] == False:
@@ -65,7 +66,7 @@ if st.session_state["authentication_status"] == None:
     st.info("If you have forgotten your username or password, then please use one of the forms below.")
     col_1, col_2 = st.columns(2)
     with col_1:
-        username_forgot_username, email_forgot_username = authenticator.forgot_username("Forgotten Username ?")
+        username_forgot_username, email_forgot_username = st.session_state["authenticator"].forgot_username("Forgotten Username ?")
         try:
             if username_forgot_username:
                 st.success("Username sent securely.")
@@ -75,7 +76,7 @@ if st.session_state["authentication_status"] == None:
         except Exception as e:
             st.error(e)
     with col_2:
-        username_forgot_pw, email_forgot_password, random_password = authenticator.forgot_password("Forgotten Password ?")
+        username_forgot_pw, email_forgot_password, random_password = st.session_state["authenticator"].forgot_password("Forgotten Password ?")
         try:
             if username_forgot_pw:
                 st.success("New password sent securely.")
@@ -89,7 +90,7 @@ if st.session_state["authentication_status"] == None:
 if st.session_state["authentication_status"] == None:
     st.warning("If you would like to register for an account then please use the form below.")
     try:
-        if authenticator.register_user("New User Registration", preauthorization=True):
+        if st.session_state["authenticator"].register_user("New User Registration", preauthorization=True):
             st.success("User registered successfully.")
     except Exception as e:
         st.error(e)
@@ -108,7 +109,7 @@ with st.sidebar:
 # If user is logged in then display a message and button to logout.
 with col_1_sidebar:
     if st.session_state["authentication_status"]:
-        authenticator.logout("Logout", "main")
+        st.session_state["authenticator"].logout("Logout", "main")
 with col_2_sidebar:
     if st.session_state["authentication_status"]:
         st.write(f"Welcome *{st.session_state['name']}*")

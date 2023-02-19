@@ -10,13 +10,11 @@ st.set_page_config(
         "Get Help": "https://github.com/hreikin/interactive-map-creator",
         "Report a bug": "https://github.com/hreikin/interactive-map-creator/issues",
         "About": """
-        # About
-
         Interactive Map Creator is created and maintained by [Michael Haslam](https://hreikin.co.uk). The source code is available on [GitHub](https://github.com/hreikin/interactive-map-creator), community contributions are always welcome.
         
         GNU Affero General Public License v3.0 or later: [AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
         """
-    }
+    },
     )
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
@@ -40,39 +38,76 @@ if "page" in params:
 else:
     default_index = 0
 
-with open('.streamlit/config.yaml') as file:
+with open(".streamlit/config.yaml") as file:
     config = st_auth.yaml.load(file, Loader=st_auth.SafeLoader)
 
 authenticator = st_auth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-    config['preauthorized']
-)
-
-name, authentication_status, username = authenticator.login('Login', 'sidebar')
-
-selected = option_menu(
-    "Interactive Map Creator",
-    options=titles,
-    icons=icons,
-    menu_icon="map",
-    default_index=default_index,
-    orientation="horizontal",
+    config["credentials"],
+    config["cookie"]["name"],
+    config["cookie"]["key"],
+    config["cookie"]["expiry_days"],
+    config["preauthorized"]
 )
 
 if st.session_state["authentication_status"] == None:
-    st.info('Please log in using the sidebar.')
-    st.write("Content to show un-authenticated users.")
+    # st.header("Interactive Map Creator")
+    # Login form
+    name, authentication_status, username = authenticator.login("Login", "main")
+if st.session_state["authentication_status"] == False:
+    st.error("Username/password is incorrect.")
+    st.session_state["authentication_status"] = None
+
+
+if st.session_state["authentication_status"] == None:
+    st.info("If you have forgotten your username or password, then please use one of the forms below.")
+    col_1, col_2 = st.columns(2)
+    with col_1:
+        username_forgot_username, email_forgot_username = authenticator.forgot_username("Forgotten Username ?")
+        try:
+            if username_forgot_username:
+                st.success("Username sent securely.")
+                # Username to be transferred to user securely
+            elif username_forgot_username == False:
+                st.error("Email not found.")
+        except Exception as e:
+            st.error(e)
+    with col_2:
+        # Forgotten password form
+        username_forgot_pw, email_forgot_password, random_password = authenticator.forgot_password("Forgotten Password ?")
+        try:
+            if username_forgot_pw:
+                st.success("New password sent securely.")
+                # Random password to be transferred to user securely
+            elif username_forgot_pw == False:
+                st.error("Username not found.")
+        except Exception as e:
+            st.error(e)
+    
+if st.session_state["authentication_status"] == None:
+    # Registration form
+    st.warning("If you would like to register for an account then please use the form below.")
+    try:
+        if authenticator.register_user("New User Registration", preauthorization=True):
+            st.success("User registered successfully.")
+    except Exception as e:
+        st.error(e)
 
 with st.sidebar:
-    
+    selected = option_menu(
+        "Interactive Map Creator",
+        options=titles,
+        icons=icons,
+        menu_icon="map",
+        default_index=default_index,
+    )
+    col_1_sidebar, col_2_sidebar = st.columns(2)
+
+with col_1_sidebar:
+    if st.session_state["authentication_status"]:
+        authenticator.logout("Logout", "main")
+with col_2_sidebar:
     if st.session_state["authentication_status"]:
         st.write(f"Welcome *{st.session_state['name']}*")
-        authenticator.logout("Logout", "sidebar")
-    elif st.session_state["authentication_status"] == False:
-        st.error("Username/password is incorrect.")
 
 for app in apps:
     if app["title"] == selected:

@@ -40,7 +40,7 @@ if "page" in params:
 else:
     default_index = 0
 
-with open('config.yaml') as file:
+with open('.streamlit/config.yaml') as file:
     config = st_auth.yaml.load(file, Loader=st_auth.SafeLoader)
 
 authenticator = st_auth.Authenticate(

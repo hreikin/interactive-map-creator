@@ -63,8 +63,8 @@ selected = option_menu(
 )
 
 if st.session_state["authentication_status"] == None:
-        st.info('Please login using the sidebar.')
-        st.write("Content to show un-authenticated users.")
+    st.info('Please log in using the sidebar.')
+    st.write("Content to show un-authenticated users.")
 
 with st.sidebar:
     

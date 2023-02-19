@@ -3,7 +3,21 @@ from streamlit_option_menu import option_menu
 import streamlit_authenticator as st_auth
 from apps import home, create, library, settings
 
-st.set_page_config(page_title="Interactive Map Creator", layout="wide")
+st.set_page_config(
+    page_title="Interactive Map Creator",
+    layout="wide",
+    menu_items={
+        "Get Help": "https://github.com/hreikin/interactive-map-creator",
+        "Report a bug": "https://github.com/hreikin/interactive-map-creator/issues",
+        "About": """
+        # About
+
+        Interactive Map Creator is created and maintained by [Michael Haslam](https://hreikin.co.uk). The source code is available on [GitHub](https://github.com/hreikin/interactive-map-creator), community contributions are always welcome.
+        
+        GNU Affero General Public License v3.0 or later: [AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
+        """
+    }
+    )
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
 # More icons can be found here: https://icons.getbootstrap.com
@@ -59,18 +73,6 @@ with st.sidebar:
         authenticator.logout("Logout", "sidebar")
     elif st.session_state["authentication_status"] == False:
         st.error("Username/password is incorrect.")
-
-    st.sidebar.info(
-        """
-        # About
-
-        Interactive Map Creator is created and maintained by [Michael Haslam](https://hreikin.co.uk). You can find me on [GitHub](https://github.com/hreikin).
-        
-        Source code is available [here](https://github.com/hreikin/interactive-map-creator), community contributions are welcome.
-        
-        GNU Affero General Public License v3.0 or later: [AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
-        """
-    )
 
 for app in apps:
     if app["title"] == selected:

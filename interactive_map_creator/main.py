@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from apps import home, create, library
+import streamlit_authenticator as st_auth
+from apps import home, create, library, settings
 
 st.set_page_config(page_title="Interactive Map Creator", layout="wide")
 
@@ -11,6 +12,7 @@ apps = [
     {"func": home.app, "title": "Home", "icon": "house"},
     {"func": create.app, "title": "Create", "icon": "file-earmark-plus"},
     {"func": library.app, "title": "Library", "icon": "collection"},
+    {"func": settings.app, "title": "Settings", "icon": "gear"},
 ]
 
 titles = [app["title"] for app in apps]
@@ -24,16 +26,40 @@ if "page" in params:
 else:
     default_index = 0
 
-with st.sidebar:
-    selected = option_menu(
-        "Interactive Map Creator",
-        options=titles,
-        icons=icons,
-        menu_icon="map",
-        default_index=default_index,
-    )
+with open('config.yaml') as file:
+    config = st_auth.yaml.load(file, Loader=st_auth.SafeLoader)
 
-    # st.sidebar.title("About")
+authenticator = st_auth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
+
+name, authentication_status, username = authenticator.login('Login', 'sidebar')
+
+selected = option_menu(
+    "Interactive Map Creator",
+    options=titles,
+    icons=icons,
+    menu_icon="map",
+    default_index=default_index,
+    orientation="horizontal",
+)
+
+if st.session_state["authentication_status"] == None:
+        st.info('Please login using the sidebar.')
+        st.write("Content to show un-authenticated users.")
+
+with st.sidebar:
+    
+    if st.session_state["authentication_status"]:
+        st.write(f"Welcome *{st.session_state['name']}*")
+        authenticator.logout("Logout", "sidebar")
+    elif st.session_state["authentication_status"] == False:
+        st.error("Username/password is incorrect.")
+
     st.sidebar.info(
         """
         # About

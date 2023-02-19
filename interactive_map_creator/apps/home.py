@@ -3,6 +3,9 @@ import streamlit as st
 def app():
 
     if st.session_state["authentication_status"]:
-        st.title("Home")
-        st.write(f"Welcome *{st.session_state['name']}*.")
-        st.write("Content to show to authenticated users.")
+        st.header(f"Welcome *{st.session_state['name']}*.")
+        st.markdown(
+            """
+            Interactive Map Creator makes it easy for anyone to create interactive maps.
+            """
+            )

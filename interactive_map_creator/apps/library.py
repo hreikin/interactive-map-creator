@@ -31,9 +31,9 @@ def create_gallery(directory):
 def app():
 
     uploads_folder = Path("uploads")
-    uploads_folder.resolve().mkdir(exist_ok=True)
+    uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
     maps_folder = Path("maps")
-    maps_folder.resolve().mkdir(exist_ok=True)
+    maps_folder.resolve().mkdir(parents=True, exist_ok=True)
     
     st.header("Library")
 

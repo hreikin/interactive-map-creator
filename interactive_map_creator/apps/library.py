@@ -36,10 +36,9 @@ def app():
     maps_folder.resolve().mkdir(exist_ok=True)
     
     st.header("Library")
-    st.file_uploader("Upload New File", type=["png", "jpg", "jpeg"], help="Upload a new image to use as map tiles.")
 
-    maps_dropdown = st.expander("Created Maps", expanded=True)
-    source_image_dropdown = st.expander("Uploaded Images", expanded=True)
+    maps_dropdown = st.expander("**Created Maps**", expanded=True)
+    source_image_dropdown = st.expander("**Uploaded Images**", expanded=True)
     with maps_dropdown:
         maps_gallery = st.container()
     with maps_gallery:

@@ -2,9 +2,9 @@ import streamlit as st
 from pathlib import Path
 from PIL import Image
 
-def save_uploaded_file(file_to_upload, location):
+def save_uploaded_file(file_to_upload, save_location, maps_save_location):
     with Image.open(file_to_upload) as f:
-        full_path = Path(f"{location}/{file_to_upload.name}")
+        full_path = Path(f"{save_location}/{file_to_upload.name}")
         f.save(full_path)
 
 def app():
@@ -22,7 +22,7 @@ def app():
     with col_2:
         uploaded_file = st.file_uploader("Upload New File", type=["png", "jpg", "jpeg"], help="Upload a new image to use as map tiles.")
         if uploaded_file is not None:
-            save_uploaded_file(uploaded_file, uploads_folder)
+            save_uploaded_file(uploaded_file, uploads_folder, maps_folder)
             st.cache_data.clear()
         
         save_btn = st.button("Save", type="primary")

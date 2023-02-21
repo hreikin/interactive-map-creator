@@ -1,11 +1,27 @@
 import streamlit as st
+import libs.gdal2tiles.gdal2tiles as gd2
 from pathlib import Path
 from PIL import Image
 
-def save_uploaded_file(file_to_upload, save_location, maps_save_location):
+def save_uploaded_file(file_to_upload, save_location, maps_folder):
     with Image.open(file_to_upload) as f:
         full_path = Path(f"{save_location}/{file_to_upload.name}")
         f.save(full_path)
+        process_into_tiles(full_path, maps_folder)
+
+def process_into_tiles(src_img, destination):
+    tiles_folder = Path(destination/src_img.stem/"tiles")
+    tiles_folder.resolve().mkdir(parents=True, exist_ok=True)
+
+    options = {
+        "profile": "raster",
+        "zoom": 5,
+        "nb_processes": 4,
+        "tile_size": 256,
+        }
+    gd2.generate_tiles(str(src_img.resolve()), tiles_folder,            # Need to show a progress bar
+     **options)
+    return                                                              # Return the tiles for the map ?
 
 def app():
 

@@ -1,15 +1,19 @@
 import streamlit as st
 from pathlib import Path
 
-@st.cache_data(show_spinner="Fetching files...")
 def fetch_files(directory):
     all_files = list()
     all_filenames = list()
-    for item in directory.iterdir():
-        if item.is_file():
+    file_extensions = (".png", ".jpg", ".jpeg")
+    if directory.stem == "maps":
+        for item in directory.rglob("screenshot.*"):
             all_files.append(str(item.resolve()))
-            all_filenames.append(str(item.name))
-
+            all_filenames.append(str(item.parent.name))
+    if directory.stem == "uploads":
+        for item in directory.rglob("*"):
+            if item.is_file() and str(item).endswith(file_extensions):
+                all_files.append(str(item.resolve()))
+                all_filenames.append(str(item.name))
     return all_files, all_filenames
 
 @st.cache_data(show_spinner="Loading gallery...")
@@ -29,14 +33,11 @@ def create_gallery(directory):
             filename_idx += 1
 
 def app():
-
-    uploads_folder = Path("uploads")
+    uploads_folder = Path("library/uploads/")
     uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
-    maps_folder = Path("maps")
+    maps_folder = Path("library/maps/")
     maps_folder.resolve().mkdir(parents=True, exist_ok=True)
-    
     st.header("Library")
-
     maps_dropdown = st.expander("**Created Maps**", expanded=True)
     source_image_dropdown = st.expander("**Uploaded Images**", expanded=True)
     with maps_dropdown:

@@ -1,0 +1,3 @@
+[submodule "interactive_map_creator/libs/gdal2tiles"]
+	path = interactive_map_creator/libs/gdal2tiles
+	url = https://github.com/tehamalab/gdal2tiles.git

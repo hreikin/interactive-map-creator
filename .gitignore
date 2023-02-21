@@ -1,3 +1,7 @@
+# Project folders
+maps/
+uploads/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

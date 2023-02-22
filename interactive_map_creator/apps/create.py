@@ -19,7 +19,7 @@ def app():
             """
             ### Step 1:
 
-            Create tiles from a previously uploaded image using the options available below.
+            Create tiles from a previously uploaded image using the options available below. If you want to re-use some previously created tiles it is safe to skip this step.
             """
             )
         create_tiles_options = st.expander(label="**Create Tiles**", expanded=True)
@@ -61,7 +61,7 @@ def app():
             """
             ##### Step 2:
 
-            Create your map by defining the options available below. The map will update to reflect your changes.
+            Create your map by defining the options available below. The map will update to reflect your changes, make sure to save often to avoid losing any work.
             """
             )
         map_options = st.expander(label="**Map Options**", expanded=True)

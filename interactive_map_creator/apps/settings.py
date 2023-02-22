@@ -8,4 +8,3 @@ def app():
             Some text.
             """
             )
-    st.header("Settings")

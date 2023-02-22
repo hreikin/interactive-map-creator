@@ -6,15 +6,15 @@ def app():
     with st.sidebar:
         step_1_msg = st.info(
             """
-            ### Step 1:
+            ### Step 1 (optional)
 
-            Upload a file to use as the base for tile creation. If you want to use a previously uploaded file then it is sfe to skip this step.
+            Upload a file to use as the base for tile creation. If you want to use a previously uploaded file then it is safe to skip this step.
             """
             )
         upload_options = st.expander(label="Upload", expanded=True)
         step_2_msg = st.info(
             """
-            ### Step 2:
+            ### Step 2 (optional)
 
             Create tiles from a previously uploaded image using the options available below. If you want to re-use some previously created tiles then it is safe to skip this step.
             """
@@ -54,13 +54,12 @@ def app():
         except Exception as e:
             print("No file selected:", e)
     with col_1:
-        st.header("Create")
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
     with col_2:
         col_2_sub_1, col_2_sub_2 = st.columns(2)
         step_3_msg = st.info(
             """
-            ##### Step 3:
+            ##### Step 3 (required):
 
             Create your map by defining the options available below. The map will update to reflect your changes, make sure to save often to avoid losing any work.
             """

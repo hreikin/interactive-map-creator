@@ -1,5 +1,5 @@
 import streamlit as st
-from interactive_map_creator import utils
+import utils
 
 def app():
     col_1, col_2 = st.columns([5,2])
@@ -21,7 +21,9 @@ def app():
             )
         create_tiles_options = st.expander(label="**Create Tiles**", expanded=True)
     with upload_options:
-        st.file_uploader(label="Upload New File")
+        uploaded_file = st.file_uploader("Upload New File", type=["png", "jpg", "jpeg"], help="Upload a new image to use as map tiles.")
+        if uploaded_file is not None:
+            utils.save_uploaded_file(uploaded_file, utils.uploads_folder)
     with create_tiles_options:
         library_files = list()
         for item in utils.uploads_folder.iterdir():

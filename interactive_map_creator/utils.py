@@ -1,8 +1,11 @@
 import streamlit as st
+import subprocess
+import sys
 from pathlib import Path
 from PIL import Image
 import libs.gdal2tiles.gdal2tiles as gd2
 
+webserver_root = Path("library/tiles/qr-code-new/")
 uploads_folder = Path("library/uploads/")
 uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
 tiles_folder = Path("library/tiles/")
@@ -14,6 +17,9 @@ home_images = [
     Path("assets/images/example_map_01.png"),
     Path("assets/images/example_map_02.png"),
 ]
+
+def create_server():
+    server = subprocess.run([sys.executable, "-m", "http.server", "-d", webserver_root, "8888"])
 
 def load_images(images=list()):
     for img in images:

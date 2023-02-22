@@ -1,7 +1,8 @@
 import streamlit as st
+import threading
 from streamlit_option_menu import option_menu
-
-from apps import home, create, library, settings
+import utils
+from apps import create, docs, home, library
 
 # Configure page title, layout, menu items and links.
 st.set_page_config(
@@ -16,15 +17,17 @@ st.set_page_config(
         GNU Affero General Public License v3.0 or later: [AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
         """
     },
-    )
+    )    
+
+threading.Thread(target=utils.create_server).start()
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
 # More icons can be found here: https://icons.getbootstrap.com
 apps = [
     {"func": home.app, "title": "Home", "icon": "house"},
-    {"func": create.app, "title": "Create", "icon": "file-earmark-plus"},
+    {"func": create.app, "title": "Create New", "icon": "file-earmark-plus"},
     {"func": library.app, "title": "Library", "icon": "collection"},
-    {"func": settings.app, "title": "Settings", "icon": "gear"},
+    {"func": docs.app, "title": "Help", "icon": "question-circle"},
 ]
 
 titles = [app["title"] for app in apps]

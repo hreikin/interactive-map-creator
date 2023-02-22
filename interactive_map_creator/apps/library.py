@@ -44,6 +44,11 @@ def app():
     maps_folder = Path("library/maps/")
     maps_folder.resolve().mkdir(parents=True, exist_ok=True)
     with st.sidebar:
+        sidebar_msg = st.info(
+            """
+            Upload new files, edit previous maps and view your library of source images, created tiles and maps.
+            """
+            )
         uploaded_file = st.file_uploader("Upload New File", type=["png", "jpg", "jpeg"], help="Upload a new image to use as map tiles.")
         if uploaded_file is not None:
             save_uploaded_file(uploaded_file, uploads_folder)

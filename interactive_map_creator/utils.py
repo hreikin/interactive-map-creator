@@ -15,7 +15,6 @@ home_images = [
     Path("assets/images/example_map_02.png"),
 ]
 
-@st.cache_data(show_spinner="Fetching images...")
 def load_images(images=list()):
     for img in images:
         st.image(str(img.resolve()))
@@ -40,7 +39,6 @@ def fetch_files(directory):
                 all_filenames.append(str(item.name))
     return all_files, all_filenames
 
-@st.cache_data(show_spinner="Loading gallery...")
 def create_gallery(directory):
     col1, col2, col3, col4, col5 = st.columns(5)
     col_list = [col1, col2, col3, col4, col5]

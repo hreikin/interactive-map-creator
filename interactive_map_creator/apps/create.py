@@ -1,18 +1,7 @@
 import streamlit as st
-import libs.gdal2tiles.gdal2tiles as gd2
-from pathlib import Path
-
-def process_into_tiles(src_img, destination, gdal_options):
-    tiles_folder = Path(destination/src_img.stem)
-    tiles_folder.resolve().mkdir(parents=True, exist_ok=True)
-    gd2.generate_tiles(str(src_img), tiles_folder, **gdal_options)
-    return                                                              # Return the tiles or path for the map ?
+from interactive_map_creator import utils
 
 def app():
-    uploads_folder = Path("library/uploads/")
-    uploads_folder.resolve().mkdir(exist_ok=True)
-    tiles_folder = Path("library/tiles/")
-    tiles_folder.resolve().mkdir(exist_ok=True)
     col_1, col_2 = st.columns([5,2])
     with st.sidebar:
         step_1_msg = st.info(
@@ -35,7 +24,7 @@ def app():
         st.file_uploader(label="Upload New File")
     with create_tiles_options:
         library_files = list()
-        for item in uploads_folder.iterdir():
+        for item in utils.uploads_folder.iterdir():
             if item.is_file():
                 library_files.append(item.name)
         image_file = st.selectbox(label="Image File", options=library_files, help="Choose an image from the library to use as the map tile source. To upload a new image use the uploader in the sidebar and then select it from this menu.")
@@ -57,9 +46,9 @@ def app():
                         "nb_processes": number_of_processes,
                         "tile_size": tile_size,
                     }
-                    for item in uploads_folder.iterdir():
+                    for item in utils.uploads_folder.iterdir():
                         if str(item.name) == str(image_file):
-                            process_into_tiles(item.resolve(), tiles_folder, gdal_options)
+                            utils.process_into_tiles(item.resolve(), utils.tiles_folder, gdal_options)
         except Exception as e:
             print("No file selected:", e)
     with col_1:
@@ -89,7 +78,7 @@ def app():
     with map_options:
         map_name = st.text_input(label="Map Name", placeholder="Select a name for your map", help="Select a name for your map.")
         library_tiles = list()
-        for item in tiles_folder.iterdir():
+        for item in utils.tiles_folder.iterdir():
             if item.is_dir():
                 library_tiles.append(item.name)
         tile_file = st.selectbox(label="Tile Source", options=library_tiles, help="Choose tiles from the library to use as the map tile source. To create new tiles use the tile creation options available in the sidebar and then select them here.")

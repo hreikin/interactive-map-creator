@@ -38,15 +38,14 @@ if "page" in params:
 else:
     default_index = 0
 
-with st.sidebar:
-    # Sidebar menu from streamlit-option-menu
-    selected = option_menu(
-        "Interactive Map Creator",
-        options=titles,
-        icons=icons,
-        menu_icon="map",
-        default_index=default_index,
-    )
+selected = option_menu(
+    "Interactive Map Creator",
+    options=titles,
+    icons=icons,
+    menu_icon="map",
+    default_index=default_index,
+    orientation="horizontal"
+)
 
 # When the user makes a menu selection run the relevant app.
 for app in apps:

@@ -1,11 +1,15 @@
 import streamlit as st
-from interactive_map_creator import utils
+import utils
 
 def app():
     with st.sidebar:
         sidebar_msg = st.info(
             """
-            Some text.
+            ### About
+
+            Interactive Map Creator is created and maintained by [Michael Haslam](https://hreikin.co.uk). The source code is available on [GitHub](https://github.com/hreikin/interactive-map-creator), community contributions are always welcome.
+            
+            GNU Affero General Public License v3.0 or later: [AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
             """
             )
     col_1, col_2 = st.columns(2)

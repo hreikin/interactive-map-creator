@@ -5,6 +5,6 @@ def app():
     with st.sidebar:
         sidebar_msg = st.info(
             """
-            Some text.
+            Here you can find helpful user guides, FAQ's and links to the source code and documentation.
             """
             )

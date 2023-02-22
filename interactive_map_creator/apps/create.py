@@ -1,4 +1,7 @@
 import streamlit as st
+import folium
+from folium.plugins import Draw
+from streamlit_folium import st_folium
 import utils
 
 def app():
@@ -6,7 +9,7 @@ def app():
     with st.sidebar:
         step_1_msg = st.info(
             """
-            ### Step 1 (optional)
+            ### Step 1 (optional):
 
             Upload a file to use as the base for tile creation. If you want to use a previously uploaded file then it is safe to skip this step.
             """
@@ -14,7 +17,7 @@ def app():
         upload_options = st.expander(label="Upload", expanded=True)
         step_2_msg = st.info(
             """
-            ### Step 2 (optional)
+            ### Step 2 (optional):
 
             Create tiles from a previously uploaded image using the options available below. If you want to re-use some previously created tiles then it is safe to skip this step.
             """
@@ -54,7 +57,9 @@ def app():
         except Exception as e:
             print("No file selected:", e)
     with col_1:
-        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        m = folium.Map(tiles="http://127.0.0.1:8888/{z}/{x}/{y}.png", location=[0,0], zoom_start=5, attr="@hreikin")
+        Draw(export=True).add_to(m)
+        st_data = st_folium(m, width=1080)
     with col_2:
         col_2_sub_1, col_2_sub_2 = st.columns(2)
         step_3_msg = st.info(
@@ -73,9 +78,6 @@ def app():
     with col_2_sub_2:
         export_btn = st.button("Export", type="secondary", use_container_width=True)
 
-
-
-
     with map_options:
         map_name = st.text_input(label="Map Name", placeholder="Select a name for your map", help="Select a name for your map.")
         library_tiles = list()
@@ -84,7 +86,7 @@ def app():
                 library_tiles.append(item.name)
         tile_file = st.selectbox(label="Tile Source", options=library_tiles, help="Choose tiles from the library to use as the map tile source. To create new tiles use the tile creation options available in the sidebar and then select them here.")
     with layer_options:
-        st.selectbox(label="Select Layer", options="example")                             # Replace options dynamically in response to button press
+        selected_layer = st.selectbox(label="Select Layer", options="example")                  # Replace options dynamically in response to button press
         layer_options_sub_1, layer_options_sub_2 = st.columns(2)
     with layer_options_sub_1:
         add_layer_btn = st.button(label="Add Layer", type="primary", use_container_width=True)

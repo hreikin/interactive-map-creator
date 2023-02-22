@@ -64,12 +64,17 @@ def app():
 
     with map_options:
         map_name = st.text_input(label="Map Name", placeholder="Select a name for your map", help="Select a name for your map.")
+        library_tiles = list()
+        for item in tiles_folder.iterdir():
+            if item.is_dir():
+                library_tiles.append(item.name)
+        tile_file = st.selectbox(label="Tile Source", options=library_tiles, help="Choose tiles from the library to use as the map tile source. To create new tiles use the tile creation options available in the sidebar and then select them here.")
     with layer_options:
         st.selectbox(label="Select Layer", options="example")                             # Replace options dynamically in response to button press
-        map_options_sub_1, map_options_sub_2 = st.columns(2)
-    with map_options_sub_1:
+        layer_options_sub_1, layer_options_sub_2 = st.columns(2)
+    with layer_options_sub_1:
         add_layer_btn = st.button(label="Add Layer", type="primary", use_container_width=True)
-    with map_options_sub_2:
+    with layer_options_sub_2:
         del_layer_btn = st.button(label="Remove Layer", type="secondary", use_container_width=True)
     with pin_options:
         st.empty()

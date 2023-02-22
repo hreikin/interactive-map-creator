@@ -1,5 +1,11 @@
 import streamlit as st
 from pathlib import Path
+from PIL import Image
+
+def save_uploaded_file(file_to_upload, destination):
+    full_path = Path(f"{destination}/{file_to_upload.name}")
+    with Image.open(file_to_upload) as f:
+        f.save(full_path)
 
 def fetch_files(directory):
     all_files = list()
@@ -37,6 +43,11 @@ def app():
     uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
     maps_folder = Path("library/maps/")
     maps_folder.resolve().mkdir(parents=True, exist_ok=True)
+    with st.sidebar:
+        uploaded_file = st.file_uploader("Upload New File", type=["png", "jpg", "jpeg"], help="Upload a new image to use as map tiles.")
+        if uploaded_file is not None:
+            save_uploaded_file(uploaded_file, uploads_folder)
+            st.cache_data.clear()
     st.header("Library")
     maps_dropdown = st.expander("**Created Maps**", expanded=True)
     source_image_dropdown = st.expander("**Uploaded Images**", expanded=True)

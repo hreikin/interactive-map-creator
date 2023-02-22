@@ -15,6 +15,13 @@ def app():
     tiles_folder.resolve().mkdir(exist_ok=True)
     col_1, col_2 = st.columns([5,2])
     with st.sidebar:
+        sidebar_msg = st.info(
+            """
+            ### Step 1:
+
+            Create tiles from a previously uploaded image using the options available below.
+            """
+            )
         create_tiles_options = st.expander(label="**Create Tiles**", expanded=True)
     with create_tiles_options:
         library_files = list()
@@ -50,6 +57,13 @@ def app():
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
     with col_2:
         col_2_sub_1, col_2_sub_2 = st.columns(2)
+        create_options_msg = st.info(
+            """
+            ##### Step 2:
+
+            Create your map by defining the options available below. The map will update to reflect your changes.
+            """
+            )
         map_options = st.expander(label="**Map Options**", expanded=True)
         layer_options = st.expander(label="**Layer Options**", expanded=True)
         pin_options = st.expander(label="**Pin Options**", expanded=True)

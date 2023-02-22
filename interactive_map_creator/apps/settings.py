@@ -1,5 +1,5 @@
 import streamlit as st
-from interactive_map_creator import utils
+import utils
 
 def app():
     with st.sidebar:

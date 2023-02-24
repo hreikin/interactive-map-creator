@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image
 import libs.gdal2tiles.gdal2tiles as gd2
 
-webserver_root = Path("library/tiles/qr-code-new/")
+webserver_root = Path("library/tiles/")
 uploads_folder = Path("library/uploads/")
 uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
 tiles_folder = Path("library/tiles/")

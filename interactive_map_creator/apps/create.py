@@ -33,8 +33,8 @@ def app():
             if item.is_file():
                 library_files.append(item.name)
         image_file = st.selectbox(label="Image File", options=library_files, help="Choose an image from the library to use as the map tile source. To upload a new image use the uploader in the sidebar and then select it from this menu.")
-        min_zoom = st.selectbox(label="Min Zoom", options=range(1,11), index=4, help="Select minimum zoom for tile generation.")
-        max_zoom = st.selectbox(label="Max Zoom", options=range(1,11), index=4, help="Select maximum zoom for tile generation.")
+        min_zoom = st.selectbox(label="Min Zoom", options=[1,2,3,4,5,6,7,8,9,10], index=2, help="Select minimum zoom for tile generation.")
+        max_zoom = st.selectbox(label="Max Zoom", options=[1,2,3,4,5,6,7,8,9,10], index=6, help="Select maximum zoom for tile generation.")
         tile_size = st.selectbox(label="Tile Size", options=[128,256,512], index=1, help="Select size of tiles for tile generation.")
         number_of_processes = st.selectbox(label="Number Of Processes", options=range(1,17), index=3, help="Select number of processes to use to generate tiles.")
         create_tiles_btn = st.button(label="Create Tiles", type="primary", use_container_width=True)
@@ -56,10 +56,6 @@ def app():
                             utils.process_into_tiles(item.resolve(), utils.tiles_folder, gdal_options)
         except Exception as e:
             print("No file selected:", e)
-    with col_1:
-        m = folium.Map(tiles="http://127.0.0.1:8888/{z}/{x}/{y}.png", location=[0,0], zoom_start=5, attr="@hreikin")
-        Draw(export=True).add_to(m)
-        st_data = st_folium(m, width=1080)
     with col_2:
         col_2_sub_1, col_2_sub_2 = st.columns(2)
         step_3_msg = st.info(
@@ -70,7 +66,6 @@ def app():
             """
             )
         map_options = st.expander(label="**Map Options**", expanded=True)
-        layer_options = st.expander(label="**Layer Options**", expanded=True)
         pin_options = st.expander(label="**Pin Options**", expanded=True)
         zone_options = st.expander(label="**Zone Options**", expanded=True)
     with col_2_sub_1:
@@ -79,15 +74,14 @@ def app():
         export_btn = st.button("Export", type="secondary", use_container_width=True)
 
     with map_options:
-        map_name = st.text_input(label="Map Name", placeholder="Select a name for your map", help="Select a name for your map.")
+        map_name = st.text_input(label="Map Name", placeholder="Select a name for your map", help="Select a name for your map, this will also be the base layers name in the layers control on the map.")
         library_tiles = list()
         for item in utils.tiles_folder.iterdir():
             if item.is_dir():
                 library_tiles.append(item.name)
-        tile_file = st.selectbox(label="Tile Source", options=library_tiles, help="Choose tiles from the library to use as the map tile source. To create new tiles use the tile creation options available in the sidebar and then select them here.")
-    with layer_options:
-        selected_layer = st.selectbox(label="Select Layer", options="example")                  # Replace options dynamically in response to button press
+        base_layer = st.selectbox(label="Base Layer", options=library_tiles, help="Choose tiles from the library to use as the map tile source for the base layer. To create new tiles use the tile creation options available in the sidebar and then select them here.")
         layer_options_sub_1, layer_options_sub_2 = st.columns(2)
+        selected_layer = st.selectbox(label="Select Layer", options="example")                  # Replace options dynamically in response to button press
     with layer_options_sub_1:
         add_layer_btn = st.button(label="Add Layer", type="primary", use_container_width=True)
     with layer_options_sub_2:
@@ -96,3 +90,11 @@ def app():
         st.empty()
     with zone_options:
         st.empty()
+
+    with col_1:
+        if base_layer:
+            m = folium.Map(location=(-75, 0), tiles=None, width="100%", height="100%", zoom_start=3, max_bounds=True)
+            folium.TileLayer(tiles=f"http://127.0.0.1:8888/{base_layer}/{{z}}/{{x}}/{{-y}}.png", name=map_name, min_zoom=min_zoom, max_zoom=max_zoom, attr="@hreikin").add_to(m)
+            Draw(export=True).add_to(m)
+            folium.LayerControl().add_to(m)
+            st_data = st_folium(m, width=1080)

@@ -18,8 +18,13 @@ st.set_page_config(
         """
     },
     )    
-
-threading.Thread(target=utils.create_server).start()
+if utils.server_started is None:
+    thread = threading.Thread(target=utils.create_server, args=[utils.server_started]).start()
+    server_started = True
+else:
+    server_started = False
+if server_started == True:
+    utils.server_started = True
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
 # More icons can be found here: https://icons.getbootstrap.com

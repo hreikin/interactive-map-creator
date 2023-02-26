@@ -5,7 +5,6 @@ from pathlib import Path
 from PIL import Image
 import libs.gdal2tiles.gdal2tiles as gd2
 
-server_started = None
 webserver_root = Path("library/tiles/")
 uploads_folder = Path("library/uploads/")
 uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
@@ -19,9 +18,8 @@ home_images = [
     Path("assets/images/example_map_02.png"),
 ]
 
-def create_server(current_status=bool()):
-    if current_status != True:
-        subprocess.run([sys.executable, "-m", "http.server", "-d", webserver_root, "8888"])
+def create_server():
+    subprocess.run([sys.executable, "-m", "http.server", "-d", webserver_root, "8888"])
 
 
 def load_images(images=list()):

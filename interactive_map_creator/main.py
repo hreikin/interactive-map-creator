@@ -1,5 +1,6 @@
 import streamlit as st
 import threading
+from streamlit.runtime.state import session_state
 from streamlit_option_menu import option_menu
 import utils
 from apps import create, docs, home, library
@@ -17,14 +18,10 @@ st.set_page_config(
         GNU Affero General Public License v3.0 or later: [AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
         """
     },
-    )    
-if utils.server_started is None:
-    thread = threading.Thread(target=utils.create_server, args=[utils.server_started]).start()
-    server_started = True
-else:
-    server_started = False
-if server_started == True:
-    utils.server_started = True
+    )
+if "server_started" not in st.session_state:
+    thread = threading.Thread(target=utils.create_server).start()
+    st.session_state["server_started"] = True
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
 # More icons can be found here: https://icons.getbootstrap.com

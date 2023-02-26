@@ -5,6 +5,7 @@ from pathlib import Path
 from PIL import Image
 import libs.gdal2tiles.gdal2tiles as gd2
 
+server_started = False
 webserver_root = Path("library/tiles/")
 uploads_folder = Path("library/uploads/")
 uploads_folder.resolve().mkdir(parents=True, exist_ok=True)

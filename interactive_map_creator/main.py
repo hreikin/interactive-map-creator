@@ -20,8 +20,10 @@ st.set_page_config(
     },
     )
 if "server_started" not in st.session_state:
-    thread = threading.Thread(target=utils.create_server).start()
-    st.session_state["server_started"] = True
+    if utils.server_started != True:
+        thread = threading.Thread(target=utils.create_server).start()
+        utils.server_started = True
+        st.session_state["server_started"] = True
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
 # More icons can be found here: https://icons.getbootstrap.com

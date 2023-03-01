@@ -19,6 +19,16 @@ st.set_page_config(
         """
     },
     )
+
+# Hide the sidebar close button.
+st.markdown("""
+<style>
+.css-1rs6os {
+    display: none;
+}
+</style>
+""", unsafe_allow_html=True)
+
 if "server_started" not in st.session_state:
     if utils.server_started != True:
         thread = threading.Thread(target=utils.create_server).start()

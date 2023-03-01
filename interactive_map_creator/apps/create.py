@@ -1,14 +1,12 @@
 import streamlit as st
 import logging
 import folium
-from folium.plugins import Draw
 from streamlit_folium import st_folium
 import utils
 
 logger = logging.getLogger(__name__)
 
 def app():
-    # col_1, col_2 = st.columns([5,2])
     with st.sidebar:
         sidebar_sub_1, sidebar_sub_2 = st.columns(2)
         step_1_title = st.subheader("Step 1 (optional):")
@@ -57,7 +55,6 @@ def app():
                             utils.process_into_tiles(item.resolve(), utils.tiles_folder, gdal_options)
         except Exception as e:
             logger.info("No file selected:", e)
-    # with col_2:
     with sidebar_sub_1:
         save_btn = st.button("Save Map", type="primary", use_container_width=True)
     with sidebar_sub_2:
@@ -93,7 +90,6 @@ def app():
             marker_popup_text = st.text_input(label="Popup Content", placeholder="Create some content for your popup", help="The text that will be displayed when the user clicks the marker and the popup shows.")
         else:
             marker_popup_text = st.empty()
-    # with marker_options:
         if marker_tooltip_checkbox:
             marker_tooltip_text = st.text_input(label="Tooltip Content", placeholder="Create some content for your tooltip", help="The text that will be displayed when the user hovers over the marker and the tooltip shows.")
         else:
@@ -106,7 +102,6 @@ def app():
     with zone_options:
         st.empty()
 
-    # with col_1:
     if base_layer:
         m = folium.Map(location=(-75, 0), tiles=None, width="100%", height="100%", zoom_start=3, max_bounds=True)
         folium.TileLayer(tiles=f"http://127.0.0.1:8888/{base_layer}/{{z}}/{{x}}/{{-y}}.png", name=map_name, min_zoom=min_zoom, max_zoom=max_zoom, attr="@hreikin").add_to(m)

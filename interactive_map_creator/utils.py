@@ -9,6 +9,8 @@ server_started = False
 webserver_root = Path("library/tiles/")
 uploads_folder = Path("library/uploads/")
 uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
+icons_folder = Path(f"{uploads_folder}/icons")
+icons_folder.resolve().mkdir(parents=True, exist_ok=True)
 tiles_folder = Path("library/tiles/")
 tiles_folder.resolve().mkdir(parents=True, exist_ok=True)
 maps_folder = Path("library/maps/")

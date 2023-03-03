@@ -33,6 +33,7 @@ def init_create_mode():
         for icon in utils.icons_folder.iterdir():
             library_icons.append(icon.stem)
         st.session_state["library_icons"] = library_icons
+        st.session_state["last_clicked"] = {'lat': 0, 'lng': 0}
         # Markers list or use FeatureGroup for removing markers ? This just allows the selector in the 
         # "Remove" markers tab to load at present.
         markers_list = list()

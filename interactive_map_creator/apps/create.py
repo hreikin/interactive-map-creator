@@ -9,28 +9,35 @@ import utils
 logger = logging.getLogger(__name__)
 
 def init_create_mode():
-    if "create_mode" not in st.session_state:
+    if "create_mode" not in st.session_state or st.session_state["create_mode"] == False:
         st.session_state["create_mode"] = True
-    elif st.session_state["create_mode"] == False:
-        st.session_state["create_mode"] = True
-    library_files = list()
-    for item in utils.uploads_folder.iterdir():
-        if item.is_file():
-            library_files.append(item.name)
-    st.session_state["library_files"] = library_files
-    library_tiles = list()
-    for item in utils.tiles_folder.iterdir():
-        if item.is_dir():
-            library_tiles.append(item.name)
-    st.session_state["library_tiles"] = library_tiles
-    library_icons = list()
-    for icon in utils.icons_folder.iterdir():
-        library_icons.append(icon.stem)
-    st.session_state["library_icons"] = library_icons
-    # Markers list or use FeatureGroup for removing markers ? This just allows the selector in the 
-    # "Remove" markers tab to load at present.
-    markers_list = list()
-    st.session_state["markers_list"] = markers_list
+        # Tile creation
+        library_files = list()
+        for item in utils.uploads_folder.iterdir():
+            if item.is_file():
+                library_files.append(item.name)
+        st.session_state["library_files"] = library_files
+        st.session_state["create_tiles_min_zoom"] = 0
+        st.session_state["create_tiles_max_zoom"] = 19
+        st.session_state["number_of_processes"] = 7
+        # Map options
+        library_tiles = list()
+        for item in utils.tiles_folder.iterdir():
+            if item.is_dir():
+                library_tiles.append(item.name)
+        st.session_state["library_tiles"] = library_tiles
+        st.session_state["map_options_min_zoom"] = 0
+        st.session_state["map_options_max_zoom"] = 19
+        # Marker options
+        library_icons = list()
+        for icon in utils.icons_folder.iterdir():
+            library_icons.append(icon.stem)
+        st.session_state["library_icons"] = library_icons
+        # Markers list or use FeatureGroup for removing markers ? This just allows the selector in the 
+        # "Remove" markers tab to load at present.
+        markers_list = list()
+        st.session_state["markers_list"] = markers_list
+
 
 # Needs to be used on the Library page also, move to `tiles.py` file ? 
 def process_into_tiles(src_img, min_zoom, max_zoom, number_of_processes):
@@ -85,9 +92,9 @@ def app():
         create_tiles_form = st.form(key="create_tiles_form")
     with create_tiles_form:
         image_file = st.selectbox(label="Image File", options=st.session_state["library_files"], help="Choose an image from the library to use as the map tile source. To upload a new image use the uploader in the sidebar and then select it from this menu.")
-        create_tiles_min_zoom = st.selectbox(label="Min Zoom", options=range(1,21), index=0, help="Select minimum zoom for tile generation.")
-        create_tiles_max_zoom = st.selectbox(label="Max Zoom", options=range(1,21), index=9, help="Select maximum zoom for tile generation.")
-        number_of_processes = st.selectbox(label="Number Of Processes", options=range(1,17), index=3, help="Select number of processes to use to generate tiles.")
+        create_tiles_min_zoom = st.selectbox(label="Min Zoom", options=range(1,21), index=st.session_state["create_tiles_min_zoom"], help="Select minimum zoom for tile generation.")
+        create_tiles_max_zoom = st.selectbox(label="Max Zoom", options=range(1,21), index=st.session_state["create_tiles_max_zoom"], help="Select maximum zoom for tile generation.")
+        number_of_processes = st.selectbox(label="Number Of Processes", options=range(1,17), index=st.session_state["number_of_processes"], help="Select number of processes to use to generate tiles.")
         create_tiles_warning_msg = st.empty()
         create_tiles_spinner = st.empty()
         create_tiles_btn = st.form_submit_button(label="Create Tiles", type="primary", use_container_width=True)
@@ -113,8 +120,8 @@ def app():
         map_name_warning_msg = st.empty()
         map_name = st.text_input(label="Map Name", placeholder="Select a name for your map", help="Select a name for your map, this will also be the base layers name in the layers control on the map.")
         base_layer = st.selectbox(label="Base Layer", options=st.session_state["library_tiles"], help="Choose tiles from the library to use as the base layer.")
-        map_options_min_zoom = st.selectbox(label="Min Zoom", options=range(1,21), index=0, help="Select minimum zoom for the map. This should be the same as the 'Min Zoom' setting used when creating the tiles or higher.")
-        map_options_max_zoom = st.selectbox(label="Max Zoom", options=range(1,21), index=9, help="Select maximum zoom for the map. This should be the same as the 'Max Zoom' setting used when creating the tiles or lower.")
+        map_options_min_zoom = st.selectbox(label="Min Zoom", options=range(1,21), index=st.session_state["map_options_min_zoom"], help="Select minimum zoom for the map. This should be the same as the 'Min Zoom' setting used when creating the tiles or higher.")
+        map_options_max_zoom = st.selectbox(label="Max Zoom", options=range(1,21), index=st.session_state["map_options_max_zoom"], help="Select maximum zoom for the map. This should be the same as the 'Max Zoom' setting used when creating the tiles or lower.")
         map_options_btn = st.form_submit_button(label="Apply", type="primary", use_container_width=True)
     
     if map_options_btn:

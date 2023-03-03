@@ -1,6 +1,5 @@
 import streamlit as st
 import logging
-import threading
 from streamlit_option_menu import option_menu
 import utils
 from apps import create, docs, home, library
@@ -32,10 +31,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 if "server_started" not in st.session_state:
-    if utils.server_started != True:
-        thread = threading.Thread(target=utils.create_server).start()
-        utils.server_started = True
-        st.session_state["server_started"] = True
+    utils.create_server()
+    st.session_state["server_started"] = True
 
 # A dictionary of apps in the format of {"func": foo, "title": "foo", "icon": "bootstrap-icon-name"}
 # More icons can be found here: https://icons.getbootstrap.com

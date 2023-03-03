@@ -1,14 +1,13 @@
 import streamlit as st
 import logging
 import subprocess
+import threading
 import sys
 from pathlib import Path
 from PIL import Image
-import libs.gdal2tiles.gdal2tiles as gd2
 
 logger = logging.getLogger(__name__)
 
-server_started = False
 webserver_root = Path("library/tiles/")
 uploads_folder = Path("library/uploads/")
 uploads_folder.resolve().mkdir(parents=True, exist_ok=True)
@@ -24,9 +23,14 @@ home_images = [
     Path("assets/images/example_map_02.png"),
 ]
 
+@st.cache_resource
 def create_server():
-    subprocess.run([sys.executable, "-m", "http.server", "-d", webserver_root, "8888"])
+    thread = threading.Thread(target=start_server).start()
+    return thread
 
+def start_server():
+    process = subprocess.run([sys.executable, "-m", "http.server", "-d", webserver_root, "8888"])
+    return process
 
 def load_images(images=list()):
     for img in images:

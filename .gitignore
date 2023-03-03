@@ -1,9 +1,5 @@
 # Project folders
 library/
-icons/
-maps/
-tiles/
-images/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

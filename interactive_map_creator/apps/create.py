@@ -147,10 +147,10 @@ def app():
         marker_tooltip_text = st.text_input(label="Tooltip Content", placeholder="Create some content for your tooltip", help="The text that will be displayed when the user hovers over the marker and the tooltip shows. Leave empty to disable the tooltip.")
         marker_options_add_btn = st.form_submit_button(label="Add", type="primary", use_container_width=True)
     with marker_options_add_tab_lcol:
-        marker_lat = st.number_input(label="Lat", value=0.00, help="Latitude of the marker.")
+        marker_lat = st.number_input(label="Lat", value=st.session_state["last_clicked"]["lat"], help="Latitude of the marker.")
         marker_width = st.number_input(label="Width", min_value=0, value=30, help="Width of the marker in pixels.")
     with marker_options_remove_tab_rcol:
-        marker_lng = st.number_input(label="Lng", value=0.00, help="Longitude of the marker.")
+        marker_lng = st.number_input(label="Lng", value=st.session_state["last_clicked"]["lng"], help="Longitude of the marker.")
         marker_height = st.number_input(label="Height", min_value=0, value=30, help="Height of the marker in pixels.")
     with marker_options_remove_tab:
         marker_options_remove_warning_msg = st.warning("Choose a marker to delete from the map. This can not be undone.")
@@ -177,7 +177,11 @@ def app():
         # Needs to be added last
         folium.LayerControl().add_to(m)
         map_data = st_folium(m, width=1175)
-        logger.info(map_data)
+        logger.info(f"MAP DATA: {map_data}")
+        if map_data["last_clicked"] == None:
+            st.session_state["last_clicked"] = {'lat': 0, 'lng': 0}
+        else:
+            st.session_state["last_clicked"] = map_data["last_clicked"]
     else:
         st.warning("You haven't selected a base layer, please configure the map using the 'Map Options' section in the sidebar.")
 

@@ -1,5 +1,8 @@
 import streamlit as st
+import logging
 import utils
+
+logger = logging.getLogger(__name__)
 
 def app():
     with st.sidebar:

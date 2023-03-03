@@ -1,9 +1,12 @@
 import streamlit as st
+import logging
 import subprocess
 import sys
 from pathlib import Path
 from PIL import Image
 import libs.gdal2tiles.gdal2tiles as gd2
+
+logger = logging.getLogger(__name__)
 
 server_started = False
 webserver_root = Path("library/tiles/")
@@ -63,9 +66,3 @@ def create_gallery(directory):
             else:
                 col_idx = 0
             filename_idx += 1
-
-def process_into_tiles(src_img, destination, gdal_options):
-    tiles_folder = Path(destination/src_img.stem)
-    tiles_folder.resolve().mkdir(parents=True, exist_ok=True)
-    gd2.generate_tiles(str(src_img), tiles_folder, **gdal_options)
-    return                                                              # Return the tiles or path for the map ?

@@ -1,9 +1,11 @@
 import streamlit as st
+import logging
 import threading
-from streamlit.runtime.state import session_state
 from streamlit_option_menu import option_menu
 import utils
-from apps import create, docs, home, library
+from apps import create, docs, home, library, old
+
+logger = logging.getLogger(__name__)
 
 # Configure page title, layout, menu items and links.
 st.set_page_config(

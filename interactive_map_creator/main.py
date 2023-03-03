@@ -3,7 +3,7 @@ import logging
 import threading
 from streamlit_option_menu import option_menu
 import utils
-from apps import create, docs, home, library, old
+from apps import create, docs, home, library
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ st.set_page_config(
 # Hide the sidebar close button.
 st.markdown("""
 <style>
-.css-1rs6os {
+.e1fqkh3o2 {
     display: none;
 }
 </style>

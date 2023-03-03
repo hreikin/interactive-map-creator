@@ -2,7 +2,7 @@ import streamlit as st
 import logging
 from streamlit_option_menu import option_menu
 import utils
-from apps import atlas, create, docs, home, uploads
+from apps import create, docs, home, maps, uploads
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +39,8 @@ if "server_started" not in st.session_state:
 apps = [
     {"func": home.app, "title": "Home", "icon": "house"},
     {"func": create.app, "title": "Create New", "icon": "file-earmark-plus"},
-    {"func": uploads.app, "title": "Uploads", "icon": "collection"},
-    {"func": atlas.app, "title": "Atlas", "icon": "collection"},
+    {"func": uploads.app, "title": "Uploads", "icon": "upload"},
+    {"func": maps.app, "title": "Maps", "icon": "map"},
     {"func": docs.app, "title": "Help", "icon": "question-circle"},
 ]
 

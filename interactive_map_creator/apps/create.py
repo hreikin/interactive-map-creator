@@ -13,7 +13,7 @@ def init_create_mode():
         st.session_state["create_mode"] = True
         # Tile creation
         library_files = list()
-        for item in utils.uploads_folder.iterdir():
+        for item in utils.library_folder.iterdir():
             if item.is_file():
                 library_files.append(item.name)
         st.session_state["library_files"] = library_files
@@ -54,7 +54,7 @@ def process_into_tiles(src_img, min_zoom, max_zoom, number_of_processes):
         "nb_processes": number_of_processes,
         "tile_size": 256,
     }
-    for item in utils.uploads_folder.iterdir():
+    for item in utils.library_folder.iterdir():
         if str(item.name) == str(src_img.name):
             gd2.generate_tiles(str(src_img), tiles_folder, **gdal_options)
     return  # Return the tiles or path for the map ?
@@ -83,7 +83,7 @@ def app():
         uploaded_file = st.file_uploader("Upload Base Image File", type=["png", "jpg", "jpeg"], help="Upload a new image to create map tiles from.")
         uploaded_icon = st.file_uploader("Upload Icon", type=["png", "jpg", "jpeg", "ico"], help="Upload a new icon.")
     if uploaded_file is not None:
-        utils.save_uploaded_file(uploaded_file, utils.uploads_folder)
+        utils.save_uploaded_file(uploaded_file, utils.library_folder)
     if uploaded_icon is not None:
         utils.save_uploaded_file(uploaded_icon, utils.icons_folder)
 
@@ -104,7 +104,7 @@ def app():
             st.warning("This process may take a long time, do not refresh the page or navigate away from it.")
         with create_tiles_spinner:
             with st.spinner("Creating tiles..."):
-                src_img = Path(utils.uploads_folder/str(image_file)).resolve()
+                src_img = Path(utils.library_folder/str(image_file)).resolve()
                 process_into_tiles(src_img, create_tiles_min_zoom, create_tiles_max_zoom, number_of_processes)
         with create_tiles_warning_msg:
             st.empty()

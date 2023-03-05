@@ -1,6 +1,7 @@
 import streamlit as st
 import logging
 import utils
+from gallery import ImageGallery
 
 logger = logging.getLogger(__name__)
 
@@ -10,9 +11,5 @@ def app():
             """
             Your own personal atlas, view your collection of maps.
             """
-            )
-    maps_dropdown = st.expander("**Created Maps**", expanded=True)
-    with maps_dropdown:
-        maps_gallery = st.container()
-    with maps_gallery:
-        utils.create_gallery(utils.maps_folder)
+        )
+    maps_gallery = ImageGallery(directory=utils.maps_folder, label="**Maps**")

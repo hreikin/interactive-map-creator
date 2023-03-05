@@ -1,21 +1,18 @@
 import streamlit as st
 import logging
 import utils
+from gallery import ImageGallery
+from tiles import CreateTiles
+from uploading import UploadFiles
 
 logger = logging.getLogger(__name__)
 
 def app():
     with st.sidebar:
-        sidebar_msg = st.info(
-            """
-            Upload new files, edit previous maps and view your library of source images, created tiles and maps.
-            """
-            )
-        uploaded_file = st.file_uploader("Upload New File", type=["png", "jpg", "jpeg"], help="Upload a new image to use as map tiles.")
-        if uploaded_file is not None:
-            utils.save_uploaded_file(uploaded_file, utils.library_folder)
-    source_image_dropdown = st.expander("**Uploaded Images**", expanded=True)
-    with source_image_dropdown:
-        source_gallery = st.container()
-    with source_gallery:
-        utils.create_gallery(utils.library_folder)
+        sidebar_info_msg = st.info("Upload new images or icons and view your previously uploaded files and created tile sets.")
+        upload_files = UploadFiles()
+        create_tiles = CreateTiles()
+    tiles_gallery = ImageGallery(directory=utils.tiles_folder, label="**Tiles**")
+    images_gallery = ImageGallery(directory=utils.images_folder)
+    icons_gallery = ImageGallery(directory=utils.icons_folder, label="**Icons**")
+    

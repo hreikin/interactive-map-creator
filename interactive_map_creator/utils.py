@@ -1,8 +1,5 @@
 import streamlit as st
-import logging
-import subprocess
-import threading
-import sys
+import logging, subprocess, sys, threading
 from pathlib import Path
 from PIL import Image
 
@@ -34,41 +31,7 @@ def start_server():
     process = subprocess.run([sys.executable, "-m", "http.server", "-d", tileserver_root, "8888"])
     return process
 
+@st.cache_data
 def load_images(images=list()):
     for img in images:
         st.image(str(img.resolve()))
-
-def save_uploaded_file(file_to_upload, destination):
-    full_path = Path(f"{destination}/{file_to_upload.name}")
-    with Image.open(file_to_upload) as f:
-        f.save(full_path)
-
-def fetch_files(directory):
-    all_files = list()
-    all_filenames = list()
-    file_extensions = (".png", ".jpg", ".jpeg")
-    if directory.stem == "maps":
-        for item in directory.rglob("screenshot.*"):
-            all_files.append(str(item.resolve()))
-            all_filenames.append(str(item.parent.name))
-    if directory.stem == "uploads":
-        for item in directory.rglob("*"):
-            if item.is_file() and str(item).endswith(file_extensions):
-                all_files.append(str(item.resolve()))
-                all_filenames.append(str(item.name))
-    return all_files, all_filenames
-
-def create_gallery(directory):
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col_list = [col1, col2, col3, col4, col5]
-    col_idx = 0
-    filename_idx = 0
-    gallery_files, gallery_filenames = fetch_files(directory)
-    for img in gallery_files:
-        with col_list[col_idx]:
-            st.image(img, caption=gallery_filenames[filename_idx])
-            if col_idx < 4:
-                col_idx += 1
-            else:
-                col_idx = 0
-            filename_idx += 1

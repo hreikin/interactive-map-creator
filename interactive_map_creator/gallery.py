@@ -3,6 +3,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Caching works if i dont use class inheritance but not if i do, below are the encountered errors.
+#
 # @st.cache_resource(show_spinner="Refreshing gallery...")
 # @st.cache_data(show_spinner="Refreshing gallery...")
 #

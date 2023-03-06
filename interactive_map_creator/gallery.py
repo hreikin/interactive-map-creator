@@ -37,7 +37,7 @@ class ImageGallery():
                 self.all_filenames.append(str(item.name))
         return self.all_files, self.all_filenames
 
-    @st.cache_resource(show_spinner="Refreshing gallery...")
+    # @st.cache_resource(show_spinner="Refreshing gallery...")
     # @st.cache_data(show_spinner="Refreshing gallery...")
     #
     # Enabling either of the above causes the following error:

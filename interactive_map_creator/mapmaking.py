@@ -78,7 +78,7 @@ class CreateMap():
         # Main page that displays the map
         self.m = folium.Map(location=(-75, 0), tiles=None, width="100%", height="100%", zoom_start=3, max_bounds=True)
         if self.base_layer:
-            self.base_tile_layer = folium.TileLayer(tiles=f"http://127.0.0.1:8888/{self.base_layer}/{{z}}/{{x}}/{{-y}}.png", name=self.map_name, min_zoom=self.map_options_min_zoom, max_zoom=self.map_options_max_zoom, attr="@hreikin").add_to(self.m)
+            self.base_tile_layer = folium.TileLayer(tiles=f"http://127.0.0.1:8888/{self.base_layer}/{{z}}/{{x}}/{{-y}}.png", name=st.session_state["map_name"], min_zoom=st.session_state["map_options_min_zoom"], max_zoom=st.session_state["map_options_max_zoom"], attr="@hreikin").add_to(self.m)
 
             self.markers_fg = folium.FeatureGroup(name="Markers")
             self.markers_fg.add_to(self.m)
@@ -96,7 +96,7 @@ class CreateMap():
             st.warning("You haven't selected a base layer, please configure the map using the 'Map Options' section in the sidebar.")
 
         if self.save_btn:
-            if "map_name" in st.session_state:
+            if "map_name" in st.session_state and len(st.session_state["map_name"]) > 0:
                 self.m.save(f"{utils.tiles_folder}/{st.session_state['base_layer']}/{st.session_state['map_name']}.html")
             else:
                 with self.save_download_btn_warning_msg:
@@ -106,6 +106,7 @@ class CreateMap():
         if "create_mode" not in st.session_state or st.session_state["create_mode"] == False:
             st.session_state["create_mode"] = True
             # Map options
+            st.session_state["map_name"] = ""
             self.library_tiles = list()
             for item in utils.tiles_folder.iterdir():
                 if item.is_dir():

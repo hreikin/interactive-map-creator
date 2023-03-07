@@ -13,5 +13,8 @@ def app():
         upload_files = UploadFiles()
         create_tiles = CreateTiles()
     tiles_gallery = MapGallery(directory=utils.tiles_folder, label="**Tiles**")
+    # tiles_gallery.create_gallery()
     images_gallery = ImageGallery(directory=utils.images_folder)
+    # images_gallery.create_gallery()
     icons_gallery = ImageGallery(directory=utils.icons_folder, label="**Icons**")
+    # icons_gallery.create_gallery()

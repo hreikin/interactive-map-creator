@@ -1,3 +1,11 @@
 # Interactive Map Creator
 
-Coming Soon.
+> Under development, coming Soon.
+
+## Project Notes
+
+**System Required Installations:**
+
+- PIL
+- GDAL
+    

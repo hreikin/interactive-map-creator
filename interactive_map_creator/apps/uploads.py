@@ -1,7 +1,8 @@
 import streamlit as st
 import logging
 import utils
-from gallery import ImageGallery, MapGallery
+from streamlit_simple_gallery import ImageGallery
+from gallery import MapGallery
 from tiles import CreateTiles
 from uploading import UploadFiles
 

@@ -1,7 +1,7 @@
 import streamlit as st
 import logging
 import utils
-from gallery import ImageGallery, MapGallery
+from gallery import MapGallery
 
 logger = logging.getLogger(__name__)
 

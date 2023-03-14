@@ -1,7 +1,8 @@
 import streamlit as st
 import folium, logging
 from streamlit_folium import st_folium
-import tiles, uploading, utils
+from streamlit_uploads_library.uploads import UploadFiles
+import tiles, utils
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +85,9 @@ class CreateMap():
         with st.sidebar:
             self.sidebar_sub_1, self.sidebar_sub_2 = st.columns(2)
             self.save_download_btn_warning_msg = st.empty()
-            self.uploads = uploading.UploadFiles(label="Step 1 (optional):", expanded=False)
+            with st.expander(label="Step 1 (optional):"):
+                self.upload_images = UploadFiles(save_location="library/images/", header="Images", info_msg="Upload images to create tiles from here.", uid="images", upload_label="Upload Images")
+                self.upload_icons = UploadFiles(save_location="library/icons/", header="Icons", info_msg="Upload custom icons to use on your map here.", uid="icons", upload_label="Upload Icons")
             self.create_tiles = tiles.CreateTiles(label="Step 2 (optional):", expanded=False)
             self.create_map_options = st.expander(label="Step 3 (required):", expanded=True)
         # Save & Download buttons

@@ -1,79 +1,50 @@
 import streamlit as st
 from pathlib import Path
+from streamlit_uploads_library.gallery import Gallery
 import logging
 
 logger = logging.getLogger(__name__)
 
-@st.cache_resource(show_spinner="Refreshing gallery...")
-class MapGallery():
-    def __init__(self, directory, expanded=True, file_extensions=(".png", ".jpg", ".jpeg"), gallery_type="container", label="**Gallery**" or None, number_of_columns=5, show_filename=False):
-        self.directory = Path(directory).resolve()
-        self.expanded = expanded
+class MapGallery(Gallery):
+    def __init__(self, directory, file_extensions=(".png", ".jpg", ".jpeg"), image_alignment="center", number_of_columns=5, show_details=False, uid="map-gallery"):
+        self.directory = directory
         self.file_extensions = file_extensions
-        self.gallery_type = gallery_type
-        self.label = label
+        self.image_alignment = image_alignment
         self.number_of_columns = number_of_columns
-        self.show_filename = show_filename
-        self.gallery = self.create_gallery()
+        self.show_details = show_details
+        self.uid = uid
+        super(Gallery, self).__init__(self.directory, self.file_extensions, self.image_alignment, self.number_of_columns, self.show_details, self.uid)
 
-    def fetch_files(self):
-        self.all_files = list()
-        self.all_filenames = list()
-        for item in self.directory.rglob("screenshot.*"):
-            if item.is_file():
-                self.all_files.append(str(item.resolve()))
-                self.all_filenames.append(str(item.parent.name))
-        return self.all_files, self.all_filenames
+    def fetch_files(self, directory, file_extensions):
+        """Returns a list of all files.
+        Returns a list of files to be used by create_library().
+        Args:
+            directory (str): A str() of the path to the folder containing the library images, for example, "assets".
+            file_extensions (tuple): A tuple() containing strings of the file extensions to include in the library, default is (".png", ".jpg", ".jpeg").
+        
+        Returns:
+            all_files (list): A list of files.
+            all_filenames (list): A list of filenames.
+        """
+        all_files = list()
+        for item in directory.rglob("screenshot*"):
+            if item.is_file() and item.name.endswith(file_extensions):
+                all_files.append(str(item.resolve()))
+        return all_files
 
-    def create_gallery(self):
-        if self.gallery_type == "expander":
-            if self.label == None:
-                self.label = ""
-                self.container_or_expander = st.expander(label=self.label, expanded=self.expanded)
-            else:
-                self.container_or_expander = st.expander(label=self.label, expanded=self.expanded)
-        else:
-            self.container_or_expander = st.container()
-            with self.container_or_expander:
-                if self.label == None:
-                    pass
-                else:
-                    self.gallery_label = st.markdown(f"**{self.label}**")
-        with self.container_or_expander:
-            self.col_idx = 0
-            self.filename_idx = 0
-            self.max_idx = self.number_of_columns-1
-            self.gallery_files, self.gallery_filenames = self.fetch_files()
-            self.all_columns = list(st.columns(self.number_of_columns))
-            for img in self.gallery_files:
-                with self.all_columns[self.col_idx]:
-                    if self.show_filename == True:
-                        st.image(img, caption=self.gallery_filenames[self.filename_idx], use_column_width=True)
-                    else:
-                        st.image(img, use_column_width=True)
-                    if self.col_idx < self.max_idx:
-                        self.col_idx += 1
-                    else:
-                        self.col_idx = 0
-                    self.filename_idx += 1
-        return self.container_or_expander
-
-
-
-
-
-# class MapGallery(ImageGallery):
-#     def __init__(self, directory, expanded=True, file_extensions=(".png"), label="**Maps**"):
-#         super(MapGallery, self).__init__(directory, expanded, file_extensions, label)
-
-#     def fetch_files(self):
-#         self.all_files = list()
-#         self.all_filenames = list()
-#         for item in self.directory.rglob("screenshot.*"):
-#             if item.is_file():
-#                 self.all_files.append(str(item.resolve()))
-#                 self.all_filenames.append(str(item.parent.name))
-#         return self.all_files, self.all_filenames
-
-#     def create_gallery(self):
-#         return super().create_gallery()
+    @st.cache_resource(experimental_allow_widgets=True, show_spinner="Refreshing gallery...")
+    def create_gallery(_self, directory, file_extensions, image_alignment, number_of_columns, show_details, uid):
+        """Creates a simple gallery with columns.
+        Creates a gallery using columns out of streamlit widgets.
+        Args:
+            directory (str): A str() of the path to the folder containing the gallery images, for example, "assets".
+            file_extensions (tuple): A tuple() containing strings of the file extensions to include in the gallery, default is (".png", ".jpg", ".jpeg").
+            image_alignment (str): A str() with the CSS keyword used to align the images and details columns.
+            number_of_columns (int): An int() indicating the number of columns to create.
+            show_details (bool): A bool() that when set to True allows the creation of libraries, default is False to create a gallery.
+            uid (str): A str() containing a unique identifier allowing you to create multiple libraries on the same page containing the same images.
+        
+        Returns:
+            library_gallery_container (st.container): A streamlit widget containing the gallery.
+        """
+        return super().create_library(directory, file_extensions, image_alignment, number_of_columns, show_details, uid)

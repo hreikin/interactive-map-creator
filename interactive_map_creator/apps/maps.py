@@ -12,5 +12,4 @@ def app():
             Your own personal atlas, view your collection of maps.
             """
         )
-    # maps_gallery = ImageGallery(directory=utils.maps_folder, label="**Maps**")
-    maps_gallery = MapGallery(directory=utils.maps_folder, label="**Maps**")
+    maps_gallery = MapGallery(directory=utils.maps_folder)

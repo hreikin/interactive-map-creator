@@ -211,12 +211,12 @@ class CreateMap():
         # Edit tab
         with self.zone_options_edit_tab:
             self.zone_options_edit_info_msg = st.info("Edit the selected zones details.")
-            self.zone_options_remove_selected_marker = st.selectbox(label="Zone To Edit", options=st.session_state["zones_list"], help="Choose a zone from the map to edit its details.")
+            self.zone_options_edit_selected_zone = st.selectbox(label="Zone To Edit", options=st.session_state["zones_list"], help="Choose a zone from the map to edit its details.")
             self.zone_options_edit_btn = st.form_submit_button(label="Update", type="primary", use_container_width=True)
         # Remove tab
         with self.zone_options_remove_tab:
             self.zone_options_remove_warning_msg = st.warning("Choose a zone to delete from the map. This can not be undone.")
-            self.zone_options_remove_selected_marker = st.selectbox(label="Zone To Remove", options=st.session_state["zones_list"], help="Choose a zone to delete from the map. This can not be undone.")
+            self.zone_options_remove_selected_zone = st.selectbox(label="Zone To Remove", options=st.session_state["zones_list"], help="Choose a zone to delete from the map. This can not be undone.")
             self.zone_options_remove_btn = st.form_submit_button(label="Remove", use_container_width=True)
 
 class EditMap():

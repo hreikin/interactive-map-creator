@@ -11,6 +11,28 @@ class CreateMap():
         self.init_state()
         self.create_sidebar()
 
+        # Main page that displays the map
+        self.m = folium.Map(location=(-75, 0), tiles=None, width="100%", height="100%", zoom_start=3, max_bounds=True)
+        if self.base_layer:
+            self.base_tile_layer = folium.TileLayer(tiles=f"http://127.0.0.1:8888/{self.base_layer}/{{z}}/{{x}}/{{-y}}.png", name=st.session_state["map_name"], min_zoom=st.session_state["map_options_min_zoom"], max_zoom=st.session_state["map_options_max_zoom"], attr="@hreikin").add_to(self.m)
+            # self.markers_fg = folium.FeatureGroup(name="Markers")
+            # self.markers_fg.add_to(self.m)
+            # self.zones_fg = folium.FeatureGroup(name="Zones")
+            # self.zones_fg.add_to(self.m)
+            for item in st.session_state["all_layers_info"].values():
+                for k, v in item.items():
+                    if k == "feature_group":
+                        v.add_to(self.m)
+            # Needs to be added last
+            self.layer_control = folium.LayerControl().add_to(self.m)
+            self.map_data = st_folium(self.m, width=1175)
+            logger.info(f"MAP DATA: {self.map_data}")
+            if self.map_data["last_clicked"] == None:
+                st.session_state["last_clicked"] = {'lat': 0, 'lng': 0}
+            else:
+                st.session_state["last_clicked"] = self.map_data["last_clicked"]
+        else:
+            st.warning("You haven't selected a base layer, please configure the map using the 'Map Options' section in the sidebar.")
         if self.save_btn:
             if "map_name" in st.session_state and len(st.session_state["map_name"]) > 0:
                 self.m.save(f"{utils.tiles_folder}/{st.session_state['base_layer']}/{st.session_state['map_name']}.html")
@@ -30,9 +52,18 @@ class CreateMap():
                 with self.map_options_name_warning_msg:
                     st.error("Please provide a name for the map and click apply.")
 
+        if self.layer_options_current_layer:
+            st.session_state["current_selected_layer"] = self.layer_options_current_layer
+            
         if self.layer_options_add_btn:
-            # Do something
-            pass
+            if len(self.layer_options_add_layer_name) > 0:
+                st.session_state["layer_names"].append(self.layer_options_add_layer_name)
+                fg = folium.map.FeatureGroup(name=self.layer_options_add_layer_name)
+                position = len(st.session_state["layer_names"])
+                layer_info = {"name": self.layer_options_add_layer_name, "position": position, "feature_group": fg,}
+                st.session_state["all_layers_info"][self.layer_options_add_layer_name] = layer_info
+                # st.session_state["all_layers_info"].append(layer_info)
+                st.experimental_rerun()
         if self.layer_options_edit_btn:
             # Do something
             pass
@@ -58,24 +89,6 @@ class CreateMap():
             # Do something
             pass
 
-        # Main page that displays the map
-        self.m = folium.Map(location=(-75, 0), tiles=None, width="100%", height="100%", zoom_start=3, max_bounds=True)
-        if self.base_layer:
-            self.base_tile_layer = folium.TileLayer(tiles=f"http://127.0.0.1:8888/{self.base_layer}/{{z}}/{{x}}/{{-y}}.png", name=st.session_state["map_name"], min_zoom=st.session_state["map_options_min_zoom"], max_zoom=st.session_state["map_options_max_zoom"], attr="@hreikin").add_to(self.m)
-            self.markers_fg = folium.FeatureGroup(name="Markers")
-            self.markers_fg.add_to(self.m)
-            self.zones_fg = folium.FeatureGroup(name="Zones")
-            self.zones_fg.add_to(self.m)
-            # Needs to be added last
-            self.layer_control = folium.LayerControl().add_to(self.m)
-            self.map_data = st_folium(self.m, width=1175)
-            logger.info(f"MAP DATA: {self.map_data}")
-            if self.map_data["last_clicked"] == None:
-                st.session_state["last_clicked"] = {'lat': 0, 'lng': 0}
-            else:
-                st.session_state["last_clicked"] = self.map_data["last_clicked"]
-        else:
-            st.warning("You haven't selected a base layer, please configure the map using the 'Map Options' section in the sidebar.")
 
     def init_state(self):
         if "create_mode" not in st.session_state or st.session_state["create_mode"] == False:
@@ -97,12 +110,15 @@ class CreateMap():
             st.session_state["last_clicked"] = {'lat': 0, 'lng': 0}
             # Markers list or use FeatureGroup for removing markers ? This just allows the selector in the 
             # "Remove" markers tab to load at present.
-            self.layers_list = list()
-            st.session_state["layers_list"] = self.layers_list
+            self.all_layers_info = dict()
+            st.session_state["all_layers_info"] = self.all_layers_info
+            self.layer_names = list()
+            st.session_state["layer_names"] = self.layer_names
             self.markers_list = list()
             st.session_state["markers_list"] = self.markers_list
             self.zones_list = list()
             st.session_state["zones_list"] = self.zones_list
+            st.session_state["current_selected_layer"] = "Select a name for your layer."
 
     def create_sidebar(self):
         # General sidebar layout
@@ -140,25 +156,23 @@ class CreateMap():
         with self.layer_options_form:
             self.layer_options_subheader = st.subheader("Layers")
             self.layer_options_info_msg = st.info("Select the current active layer to add all markers and zones too.")
-            self.layer_options_current_layer = st.selectbox(label="Current Acive Layer", options=st.session_state["layers_list"], help="Select the current active layer to add all markers and zones too.")
+            self.layer_options_current_layer = st.selectbox(label="Current Acive Layer", options=st.session_state["layer_names"], help="Select the current active layer to add all markers and zones too.")
             self.layer_options_add_tab, self.layer_options_edit_tab, self.layer_options_remove_tab = st.tabs(["Add", "Edit", "Remove"])
         # Add tab
         with self.layer_options_add_tab:
             self.layer_options_add_info_msg = st.info("Give your new layer a name and define its position in the layers controller.")
-            self.layer_options_add_layer_name = st.text_input(label="New Layer Name", key="add-layer-name", placeholder="Select a name for your layer.", help="Select a name for your layer, this will also be the layers name in the layers control on the map.")
-            self.layer_options_add_position = st.number_input(label="Position", key="add-layer-position", min_value=1)
+            self.layer_options_add_layer_name = st.text_input(label="Layer Name", key="add-layer-name", placeholder="Select a name for your layer.", help="Select a name for your layer, this will also be the layers name in the layers control on the map.")
+            # self.layer_options_add_position = st.number_input(label="Position", key="add-layer-position", min_value=1)
             self.layer_options_add_btn = st.form_submit_button(label="Add", type="primary", use_container_width=True)
         # Edit tab
         with self.layer_options_edit_tab:
-            self.layer_options_edit_info_msg = st.info("Edit the selected layers name and position in the layers controller.")
-            self.layer_options_edit_selected_layer = st.selectbox(label="Layer To Edit", options=st.session_state["layers_list"], help="Select the layer you wish to edit.")
-            self.layer_options_edit_layer_name = st.text_input(label="Layer Name", key="edit-layer-name", placeholder="Select a name for the layer.", help="Select a name for your layer, this will also be the layers name in the layers control on the map.")
+            self.layer_options_edit_info_msg = st.info("Edit the name and position of the 'Current Active Layer' in the layers controller.")
+            self.layer_options_edit_layer_name = st.text_input(label="Layer Name", key="edit-layer-name", placeholder="Rename the current layer.", help="Select a name for your layer, this will also be the layers name in the layers control on the map.")
             self.layer_options_edit_layer_position = st.number_input(label="Position", key="edit-layer-position", min_value=1)
             self.layer_options_edit_btn = st.form_submit_button(label="Update", type="primary", use_container_width=True)
         # Remove tab
         with self.layer_options_remove_tab:
-            self.layer_options_remove_warning_msg = st.warning("Choose a layer to delete from the map. This can not be undone.")
-            self.layer_options_remove_selected_layer = st.selectbox(label="Layer To Remove", options=st.session_state["layers_list"], help="Select the layer you wish to delete from the map, this will also delete all markers and zones associated with it.")
+            self.layer_options_remove_warning_msg = st.warning("Delete the 'Current Active Layer' from the map. This can not be undone.")
             self.layer_options_remove_btn = st.form_submit_button(label="Delete", use_container_width=True)
         # Marker options form
         with self.marker_options_form:
